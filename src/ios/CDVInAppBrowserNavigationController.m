@@ -23,6 +23,14 @@
 
 @implementation CDVInAppBrowserNavigationController : UINavigationController
 
+- (BOOL)hasTopNotch {
+    if (@available(iOS 11.0, *)) {
+        return [[[UIApplication sharedApplication] delegate] window].safeAreaInsets.top > 20.0;
+    }
+
+    return  NO;
+}
+
 - (void) dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
     if ( self.presentedViewController) {
         [super dismissViewControllerAnimated:flag completion:completion];
@@ -32,7 +40,11 @@
 - (void) viewDidLoad {
 
     CGRect statusBarFrame = [self invertFrameIfNeeded:[UIApplication sharedApplication].statusBarFrame];
-    statusBarFrame.size.height = STATUSBAR_HEIGHT;
+    if ([self hasTopNotch]) {
+        statusBarFrame.size.height = 44;
+    } else {
+        statusBarFrame.size.height = STATUSBAR_HEIGHT;
+    }
     // simplified from: http://stackoverflow.com/a/25669695/219684
 
     UIToolbar* bgToolbar = [[UIToolbar alloc] initWithFrame:statusBarFrame];
