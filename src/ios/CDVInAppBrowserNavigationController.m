@@ -23,14 +23,6 @@
 
 @implementation CDVInAppBrowserNavigationController : UINavigationController
 
-- (BOOL)hasTopNotch {
-    if (@available(iOS 11.0, *)) {
-        return [[[UIApplication sharedApplication] delegate] window].safeAreaInsets.top > 20.0;
-    }
-
-    return  NO;
-}
-
 - (void) dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
     if ( self.presentedViewController) {
         [super dismissViewControllerAnimated:flag completion:completion];
@@ -40,11 +32,21 @@
 - (void) viewDidLoad {
 
     CGRect statusBarFrame = [self invertFrameIfNeeded:[UIApplication sharedApplication].statusBarFrame];
-    if ([self hasTopNotch]) {
-        statusBarFrame.size.height = 44;
+
+    // simplified from https://github.com/apache/cordova-plugin-inappbrowser/issues/301#issuecomment-452220131
+    // and https://stackoverflow.com/questions/46192280/detect-if-the-device-is-iphone-x
+    bool hasTopNotch = NO;
+
+    if (@available(iOS 11.0, *)) {
+        hasTopNotch = [[[UIApplication sharedApplication] delegate] window].safeAreaInsets.top > 20.0;
+    }
+
+    if(hasTopNotch){
+        statusBarFrame.size.height = [UIApplication sharedApplication].statusBarFrame.size.height;
     } else {
         statusBarFrame.size.height = STATUSBAR_HEIGHT;
     }
+
     // simplified from: http://stackoverflow.com/a/25669695/219684
 
     UIToolbar* bgToolbar = [[UIToolbar alloc] initWithFrame:statusBarFrame];
