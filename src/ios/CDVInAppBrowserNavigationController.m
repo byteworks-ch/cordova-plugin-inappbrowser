@@ -19,8 +19,6 @@
 
 #import "CDVInAppBrowserNavigationController.h"
 
-#define    STATUSBAR_HEIGHT 20.0
-
 @implementation CDVInAppBrowserNavigationController : UINavigationController
 
 - (void) dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
